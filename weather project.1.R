@@ -49,11 +49,32 @@ glimpse(weather_df2)
 
 weather_df2$HOURLYPrecip <- (as.numeric(weather_df2$HOURLYPrecip))
 glimpse(weather_df2)
-weather_df2 <- rename(HOURLYRelativeHumidity = 'relative_humidity', HOURLYDRYBULBTEMPF = 'dry_bulb_temp_f', HOURLYPrecip = 'precip', HOURLYWindSpeed = 'wind_speed', HOURLYStationPressure = 'station_pressure')
-glimpse(weather_df2)
-set.seed(1234)
-weather_split <- initial_split(weather_df2, prop = 0.8)
-library(ggplot2)
-ggplot(data = weather_df2, mapping = aes(x = HOURLYRelativeHumidity,y = HOURLYPrecip)) + geom_histogram(bins = 100, color = "white", fill = "red") + coord_cartesian(xlim = NULL)
+weather_df3 <- rename(weather_df2, relative_humidity = HOURLYRelativeHumidity, dry_bulb_temp_f = HOURLYDRYBULBTEMPF, precip = HOURLYPrecip, wind_speed = HOURLYWindSpeed, station_pressure = HOURLYStationPressure)
+glimpse(weather_df3)
 
-linear_model <- lm(HOURLYPrecip ~ HOURLYRelativeHumidity, data = weather_split)
+set.seed(1234)
+weather_split1 <- initial_split(weather_df3, prop = 0.8)
+
+ggplot(data = weather_df3, mapping = aes(x = (relative_humidity))) + geom_histogram(bins = 100, color = "white", fill ="red" ) + coord_cartesian(xlim = NULL)
+
+linear_model <- lm(precip ~ relative_humidity, data = weather_split1)
+summary(linear_model)
+
+linear_model1 <- lm(precip ~ dry_bulb_temp_f, data = weather_split1)
+summary(linear_model1)
+
+linear_model2 <- lm(precip ~ wind_speed, data = weather_split1)
+summary(linear_model2)
+
+linear_model3 <- lm(precip ~ station_pressure, data = weather_split1)
+summary(linear_model3)
+
+ggplot(data = weather_df3, mapping = aes(x = relative_humidity, y = precip)) + geom_point() + geom_smooth(method = "lm", na.rm = TRUE)
+
+ggplot(data = weather_df3, mapping = aes(x = dry_bulb_temp_f, y = precip)) + geom_point() + geom_smooth(method = "lm", na.rm = TRUE)
+
+ggplot(data = weather_df3, mapping = aes(x = wind_speed, y = precip)) + geom_point() + geom_smooth(method = "lm", na.rm = TRUE)
+
+ggplot(data = weather_df3, mapping = aes(x = station_pressure, y = precip)) + geom_point() + geom_smooth(method = "lm", na.rm = TRUE)
+
+
