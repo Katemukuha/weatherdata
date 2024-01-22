@@ -77,4 +77,9 @@ ggplot(data = weather_df3, mapping = aes(x = wind_speed, y = precip)) + geom_poi
 
 ggplot(data = weather_df3, mapping = aes(x = station_pressure, y = precip)) + geom_point() + geom_smooth(method = "lm", na.rm = TRUE)
 
+weather_recipe <- recipe(precip ~ ., data = weather_df3)
+ridge_spec <- linear_reg(penalty = 0.1, mixture = 0) %>% set_engine("glmnet")
+ridge_wf <- workflow() %>% add_recipe(weather_recipe)
+ridge_fit <- ridge_wf %>% add_model(ridge_spec) %>% fit(data = weather_df3)
+ridge_fit %>% pull_workflow_fit() %>% tidy()
 
